@@ -13,6 +13,21 @@ pipeline {
 
     stages {
 
+        stage('Checkout Source Code') {
+            steps {
+                echo "Pulling source code from GitHub..."
+                git branch: 'main', url: 'https://github.com/your-username/your-repo.git'
+            }
+            post {
+                success {
+                    echo 'Source code pulled successfully '
+                }
+                failure {
+                    echo 'Failed to pull source code '
+                }
+            }
+        }
+
         stage('Build WAR') {
             steps {
                 echo "Building WAR file..."
