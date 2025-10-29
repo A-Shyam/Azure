@@ -31,7 +31,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image..."
-                sh "docker build -t ${DOCKER_IMAGE}:latest ."
+                sh "sudo docker build -t ${DOCKER_IMAGE}:latest ."
             }
             post {
                 success {
@@ -46,7 +46,7 @@ pipeline {
         stage('Tag Docker Image') {
             steps {
                 echo "Tagging Docker image with ${IMAGE_TAG}..."
-                sh "docker tag ${DOCKER_IMAGE}:latest ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                sh "sudo docker tag ${DOCKER_IMAGE}:latest ${DOCKER_IMAGE}:${IMAGE_TAG}"
             }
             post {
                 success {
@@ -61,10 +61,10 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 echo "Logging in to DockerHub..."
-                sh 'echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
+                sh 'sudo echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
                 echo "Pushing image to DockerHub..."
-                sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
-                sh "docker push ${DOCKER_IMAGE}:latest"
+                sh "sudo docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                sh "sudo docker push ${DOCKER_IMAGE}:latest"
             }
             post {
                 success {
@@ -79,8 +79,8 @@ pipeline {
         stage('Clean up Local Images') {
             steps {
                 echo "Removing local Docker images..."
-                sh "docker rmi ${DOCKER_IMAGE}:${IMAGE_TAG} || true"
-                sh "docker rmi ${DOCKER_IMAGE}:latest || true"
+                sh "sudo docker rmi ${DOCKER_IMAGE}:${IMAGE_TAG} || true"
+                sh "sudo docker rmi ${DOCKER_IMAGE}:latest || true"
             }
             post {
                 success {
@@ -95,7 +95,7 @@ pipeline {
         stage('Run Container') {
             steps {
                 echo "Running Docker container..."
-                sh "docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                sh "sudo docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE}:${IMAGE_TAG}"
             }
             post {
                 success {
