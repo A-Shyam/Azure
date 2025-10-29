@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+        maven 'maven'    
+    }
 
     environment {
         DOCKER_IMAGE = "shyam0115/webapp"
